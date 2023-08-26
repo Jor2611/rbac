@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, Req } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { SignUpDto } from './dtos/signup.dto';
 import { UpdateAccountDto } from './dtos/update-account.dto';
@@ -15,11 +15,11 @@ export class AccountController {
 
   @Get(':id')
   @ACL('account','read')
-  async fetch(@Req() req: Request, @Param('id') id: string){
+  async fetch(@Req() req: Request, @Param('id', new ParseIntPipe()) id: number){
     if(req.accessType === 'self'){
-      await this.accountService.checkOwnership(req.decoded.id,parseInt(id));
+      await this.accountService.checkOwnership(req.decoded.id, id);
     }
-    return this.accountService.findOneBy({ id: parseInt(id) });
+    return this.accountService.findOneBy({ id });
   }
 
   @Post('signup')
@@ -28,17 +28,27 @@ export class AccountController {
   }
 
   @Post('signin')
+  @HttpCode(200)
   signIn(@Body() body: SignInDto){
     return this.accountService.signIn(body);
   }
 
-  
   @Patch(':id')
   @ACL('account','update')
-  async update(@Req() req: Request, @Param('id') id: string, @Body() body: UpdateAccountDto){
+  async update(@Req() req: Request, @Param('id', new ParseIntPipe()) id: number, @Body() body: UpdateAccountDto){
     if(req.accessType === 'self'){
-      await this.accountService.checkOwnership(req.decoded.id,parseInt(id));
+      await this.accountService.checkOwnership(req.decoded.id, id);
     }
-    return this.accountService.update(parseInt(id), body);
+    return this.accountService.update(id, body);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @ACL('account','delete')
+  async remove(@Req() req: Request, @Param('id', new ParseIntPipe()) id: number){
+    if(req.accessType === 'self'){
+      await this.accountService.checkOwnership(req.decoded.id, id);
+    }
+    return this.accountService.remove(id);
   }
 }

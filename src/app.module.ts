@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AccountModule } from './account/account.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './dataSource.options';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { RBACGuard } from './guards/rbac.guard';
 import { AccountService } from './account/account.service';
@@ -21,7 +21,13 @@ import { TokenParse } from './middlewares/token-parse.middleware';
     TypeOrmModule.forRootAsync({
       useFactory: () => dataSourceOptions
     }),
-    JwtModule.register({}),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config:ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: config.get<string>('JWT_EXPIRATION') }
+      })
+    }),
     AccountModule
   ],
   controllers: [AppController],
@@ -35,8 +41,7 @@ import { TokenParse } from './middlewares/token-parse.middleware';
     {
       provide: APP_GUARD,
       useClass: RBACGuard
-    },
-    JwtService
+    }
   ],
   exports: [JwtModule]
 })

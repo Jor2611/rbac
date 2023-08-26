@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AccountService } from "../account/account.service";
 import { AccessTypes, Permission, Roles, rolePermissionMap } from "../account/constants/rolePermissions";
@@ -12,7 +12,7 @@ export class RBACGuard implements CanActivate{
     if(acl){
 
       if(!request.decoded){
-        return false;
+        throw new UnauthorizedException();
       }
 
       if(request.decoded.role === 'root'){
@@ -24,7 +24,7 @@ export class RBACGuard implements CanActivate{
 
       //In case token exists, but account not!
       if(!account){
-        return false;
+        throw new UnauthorizedException();
       }
       
       //Still we use role which was in token

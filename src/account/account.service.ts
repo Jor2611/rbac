@@ -36,8 +36,7 @@ interface UpdateAccountData{
 export class AccountService {
   constructor(
     @InjectRepository(Account) private repository: Repository<Account>, 
-    private jwtService: JwtService,
-    private config: ConfigService  
+    private jwtService: JwtService 
   ){}
 
   create(data: CreateAccountData){
@@ -50,7 +49,7 @@ export class AccountService {
   }
 
   findOneBy(filter: AccountFilter) {
-    return this.repository.findOneBy(filter);
+    return this.repository.findOneBy(filter) || null;
   }
 
   async signUp(data: CreateAccountData) {
@@ -62,16 +61,11 @@ export class AccountService {
 
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(data.password, salt, 32)) as Buffer;
-
     const hashedPassword = `${salt}.${hash.toString('hex')}`;
 
     const account = await this.create({ ...data, password: hashedPassword });
     const payload = { id: account.id, email: account.email, role: account.role };
-
-    const token = await this.jwtService.signAsync(payload,{ 
-      secret: this.config.get('JWT_SECRET'),
-      expiresIn: this.config.get('JWT_EXPIRATION')
-    });
+    const token = await this.jwtService.signAsync(payload);
 
     return { ...account, token };
   }
@@ -91,10 +85,7 @@ export class AccountService {
     }
 
     const payload = { id: account.id, email: account.email, role: account.role };
-    const token = await this.jwtService.signAsync(payload,{ 
-      secret: this.config.get('JWT_SECRET'),
-      expiresIn: this.config.get('JWT_EXPIRATION')
-    });
+    const token = await this.jwtService.signAsync(payload);
 
     return { ...account, token };
   }
@@ -109,13 +100,23 @@ export class AccountService {
     if(attrs.password){
       const salt = randomBytes(8).toString('hex');
       const hash = (await scrypt(attrs.password, salt, 32)) as Buffer;
-
       attrs.password = `${salt}.${hash.toString('hex')}`;
     }
 
     Object.assign(account, attrs);
 
     return this.repository.save(account);
+  }
+
+  async remove(id: number){
+    const account = await this.findOneBy({ id });
+    
+    if(!account){
+      throw new NotFoundException('Account not found!');
+    }
+
+    await this.repository.remove(account);
+    return { id };
   }
 
   async checkOwnership(ownerId: number, accountId: number){

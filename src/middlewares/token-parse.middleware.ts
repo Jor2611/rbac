@@ -28,7 +28,7 @@ export class TokenParse implements NestMiddleware{
   async use(req: Request, res: Response, next: NextFunction) {
     if(req.headers['authorization']){
       const [strategy, token] = req.headers['authorization'].split(' ');
-      
+
       if(strategy !== 'Bearer'){
         throw new UnauthorizedException();
       }
@@ -40,10 +40,8 @@ export class TokenParse implements NestMiddleware{
   }
 
   private async parseToken(token: string): Promise<TokenData>{
-    const tokenSecret = this.config.get<string>('JWT_SECRET');
-
     try{
-      await this.jwtService.verifyAsync(token, { secret: tokenSecret });
+      await this.jwtService.verifyAsync(token);
     }catch(err){
       throw new UnauthorizedException();
     }

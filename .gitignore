@@ -37,3 +37,7 @@ lerna-debug.log*
 
 # ENVS
 .env*
+
+# SQLITE DBS
+db.sqlite
+test.sqlite
