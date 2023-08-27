@@ -16,7 +16,7 @@ import { TokenParse } from './middlewares/token-parse.middleware';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
-      ignoreEnvFile: process.env.NODE_ENV === "production" 
+      ignoreEnvFile: !`.env.${process.env.NODE_ENV}`
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => dataSourceOptions
