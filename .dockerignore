@@ -1,5 +1,4 @@
 node_modules
 dist
-migrations
 db.sqlite
 test.sqlite

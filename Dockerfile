@@ -11,7 +11,7 @@ COPY . .
 
 RUN npm run build
 
-RUN npm run typeorm migration:generate ./migrations/initial-schema -- -o -d ./src/db.dataSource.ts
+# RUN npm run typeorm migration:generate ./migrations/initial-schema -- -o -d ./src/db.dataSource.ts
 
 RUN npm run typeorm migration:run -- -d ./src/db.dataSource.ts
 

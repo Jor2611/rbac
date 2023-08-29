@@ -23,10 +23,14 @@ switch(process.env.NODE_ENV){
       synchronize: false,
     };
     break;
-  case "test":
+  case "production":
     dsOptions = {
       type: 'postgres',
-      database: process.env.DATABASE_URL,
+      host: process.env.RDS_HOSTNAME,
+      port: +process.env.RDS_PORT,
+      username: process.env.RDS_USERNAME,
+      password: process.env.RDS_PASSWORD,
+      database: process.env.RDS_DB_NAME,
       migrations: [join(__dirname, '..', 'migrations/*.js')],
       entities: [join(__dirname, '..', '**/*.entity.js')],
       migrationsRun: true,
