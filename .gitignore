@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/ca
+TODO
 
 # Logs
 logs
@@ -36,7 +38,3 @@ lerna-debug.log*
 
 # ENVS
 .env*
-
-# SQLITE DBS
-db.sqlite
-test.sqlite

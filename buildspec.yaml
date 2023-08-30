@@ -9,6 +9,11 @@ phases:
     commands:
       - echo "Build the app!"
       - npm run build
+  post_build:
+    commands:
+      - echo "Fetching certificate from S3..."
+      - aws s3 cp s3://elasticbeanstalk-eu-central-1-130655165674/ca/global-bundle.pem ./dist/ca/global-bundle.pem
+
 artifacts:
   files:
     - '**/*'
