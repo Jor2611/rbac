@@ -4,7 +4,7 @@
 
 # Role-Based Access Control (RBAC)
 
-This repository is a custom implementiion of Role-Based Access Control (RBAC) system using JSON Web Tokens ([JWT](https://jwt.io/)) and the [Nest.js](https://github.com/nestjs/nest) framework. In addition, covered the Continuous Integration/Continuous Deployment (CI/CD) process using GitHub, AWS CodeBuild and AWS Elastic Beanstalk. RBAC is a method of restricting access to system resources based on the roles assigned to individual users. This method is widely used because of its flexibility and ease of management.
+This repository is a custom implemention of Role-Based Access Control (RBAC) system using JSON Web Tokens ([JWT](https://jwt.io/)) and the [Nest.js](https://github.com/nestjs/nest) framework. In addition, covered with Continuous Integration/Continuous Deployment (CI/CD) process using GitHub, AWS CodeBuild and AWS Elastic Beanstalk. RBAC is a method of restricting access to system resources based on the roles assigned to individual users. Widely used method because of its flexibility and ease of management.
 
 
 ### Prerequisites
